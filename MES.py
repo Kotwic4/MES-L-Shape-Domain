@@ -1,4 +1,8 @@
 import math
+import operator
+import numpy as np
+from mpl_toolkits.mplot3d import axes3d
+import matplotlib.pyplot as plt
 
 
 def g(x, y):
@@ -14,6 +18,7 @@ if p < 1:
     print("p must be >= 1")
     print("Assuming p = 1")
 N = 2 * p + 1
+h = (1/p)
 MatrixA = [[0 for x in range(N*N)] for y in range(N*N)]
 Matrix = [[2/3, -1/6, -1/3, -1/6],
           [-1/6, 2/3, -1/6, -1/3],
@@ -37,5 +42,26 @@ for i in range(p, N):
         x = i * N + j
         for k in range(0, N*N):
             MatrixA[x][k] = 0
+        MatrixA[x][x] = 1
+
+for i in range(1, N-1):
+    MatrixB[i] = (1/2) * h * (g(-1+(i*h), 1) + g(-1+((i+1)*h), 1))
+for i in range(1, N-1):
+    MatrixB[i*N+N-1] = (1/2) * h * (g(1, 1-(i*h)) + g(1, 1-((i+1)*h)))
+for i in range(1, p):
+    MatrixB[i*N] = (1/2) * h * (g(-1, 1-(i*h)) + g(-1, 1-((i+1)*h)))
+for i in range(p+1, N-1):
+    MatrixB[(N-1)*N+i] = (1/2) * h * (g(-1+(i*h), -1) + g(-1+((i+1)*h), -1))
+MatrixB[0] = (1/2) * h * (g(-1+h, 1) + g(-1, 1-h))
+MatrixB[N-1] = (1/2) * h * (g(1-h, 1) + g(1, 1-h))
+MatrixB[N*N-1] = (1/2) * h * (g(-1+h, -1) + g(-1, -1+h))
+MatrixZ = np.linalg.solve(MatrixA, MatrixB)
+X = [(x % N)*h-1 for x in range(N*N)]
+Y = [1-(y // N)*h for y in range(N*N)]
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.scatter(X, Y, MatrixZ)
+plt.show()
+
 
 
