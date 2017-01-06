@@ -3,7 +3,9 @@ import operator
 import numpy as np
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
-
+import scipy.interpolate as interp
+from matplotlib import cm
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 def g(x, y):
     r = math.sqrt(x ** 2 + y ** 2)
@@ -17,9 +19,12 @@ if p < 1:
     p = 1
     print("p must be >= 1")
     print("Assuming p = 1")
+
 N = 2 * p + 1
 h = (1/p)
+
 MatrixA = [[0 for x in range(N*N)] for y in range(N*N)]
+
 Matrix = [[2/3, -1/6, -1/3, -1/6],
           [-1/6, 2/3, -1/6, -1/3],
           [-1/3, -1/6, 2/3, -1/6],
@@ -37,6 +42,7 @@ for i in range(N-1):
             for y in temp:
                 val = Matrix[x[1]][y[1]]*p*p
                 MatrixA[x[0]][y[0]] += val
+
 for i in range(p, N):
     for j in range(0, p+1):
         x = i * N + j
@@ -60,7 +66,22 @@ X = [(x % N)*h-1 for x in range(N*N)]
 Y = [1-(y // N)*h for y in range(N*N)]
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
-ax.scatter(X, Y, MatrixZ)
+
+plotx,ploty = np.meshgrid(np.linspace(np.min(X),np.max(X),50),
+                           np.linspace(np.min(Y),np.max(Y),50))
+
+plotz = interp.griddata((X,Y),
+                        MatrixZ.tolist(),
+                        (plotx,ploty),
+                        method='linear')
+
+surf = ax.plot_surface(
+    plotx, ploty, plotz,
+    cstride=1, rstride=1,
+    cmap=cm.coolwarm,
+    antialiased=True,
+    linewidth=0)
+
 plt.show()
 
 
