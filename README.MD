@@ -1,3 +1,11 @@
-Created by Radomir Krawczykiewicz and Michał Pawłowicz
+# MES-L-Shape-Domain
 
-Description of problem : http://home.agh.edu.pl/~paszynsk/RRIR/Lshapedomain.pdf
+Project assigment for Differential Equations course at AGH UST.
+
+[Problem description](Lshapedomain.pdf)
+
+# Third party
+
+[Numpy](http://www.numpy.org/)
+
+[Matplotlib](https://matplotlib.org/)
